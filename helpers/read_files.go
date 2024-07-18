@@ -3,17 +3,20 @@ package helpers
 import (
 	"os"
 	"path"
+
+	"github.com/fatih/color"
 )
 
 // reads all files in a directory
-func ReadFiles(dirPath string) ([]*os.DirEntry,error){
+func ReadFiles(dirPath string) ([]string,error){
+	color.Green("📂 Fetching File From %s", dirPath)
 	entries, err := os.ReadDir(dirPath)
 
 	if err != nil {
 		return nil , err
 	}
 
-	var files []*os.DirEntry
+	var files []string
 
 	for _,entry := range entries{
 		// check if the entry is a directory or a file
@@ -24,10 +27,9 @@ func ReadFiles(dirPath string) ([]*os.DirEntry,error){
 			// append returned values from recursion call to files slice
 			files = append(files, nestedFiles...)
 		} else {
-			files = append(files, &entry)
+			files = append(files, path.Join(dirPath,entry.Name()))
 		}
 	}
-
-
+	color.Green("✅ Got Files From %s" , dirPath)
 	return files, nil
 }
