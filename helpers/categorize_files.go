@@ -11,12 +11,17 @@ import (
 	"github.com/Rouch3362/roderfile/types"
 )
 
-func CategorizeFiles(filePaths []string) error {
+
+// a variable that turns to true if we made changes to user files
+var ORGANIZED bool
+
+
+func CategorizeFiles(filePaths *[]string) error {
 
 	fileTypesDirectories := map[string][]string{}
 
 	GreenLog("🕵️  Analyzing Your Files...")
-	for _, path := range filePaths {
+	for _, path := range *filePaths {
 		// get extensions of a file
 		fileExtension := filepath.Ext(path)
 		// check if file in that path exists
@@ -28,10 +33,14 @@ func CategorizeFiles(filePaths []string) error {
 		}
 	}
 	// created direcetories based on categories
-	err := CreatDirectories(fileTypesDirectories)
+	err := CreateDirectories(fileTypesDirectories)
     
 	if err != nil {
 		return err
+	}
+
+	if !ORGANIZED {
+		GreenLog("🎉 Hooooooray Everything is Already Organized")
 	}
 
 	return nil
@@ -39,7 +48,7 @@ func CategorizeFiles(filePaths []string) error {
 
 
 
-func CreatDirectories(dirs map[string][]string) error {
+func CreateDirectories(dirs map[string][]string) error {
 	// loop over file types and their folder names
 	for key , value := range dirs {
 		
@@ -56,6 +65,10 @@ func CreatDirectories(dirs map[string][]string) error {
 
 			// if folder already exists ingnores rest of the code
 			if !CheckFileOrFolderNotExist(pathToFolder) {
+				err := MoveFile(pathFile, pathToFolder)
+				if err != nil {
+					return err
+				}
 				continue
 			}
 
@@ -69,7 +82,7 @@ func CreatDirectories(dirs map[string][]string) error {
 			err := MoveFile(pathFile, pathToFolder)
 			
 
-			if err != nil {
+			if err != nil {	
 				return err
 			}
 			GreenLog(fmt.Sprintf("✅ %sFolder Created Successfully", key))
@@ -97,10 +110,14 @@ func CheckFileOrFolderNotExist(path string) bool {
 
 func MoveFile(from , to string) error {
 
+	ORGANIZED = true
 
 	// opens file and reads its content
 	file , err := os.Open(from)
 
+	if err != nil {
+		return err
+	}
 
 	GreenLog(fmt.Sprintf("📦 Moving %s File to %s ...",file.Name(), to))
 
@@ -109,9 +126,7 @@ func MoveFile(from , to string) error {
 	lastSlashIndex := strings.LastIndex(file.Name() , "/")
 	newfilePath := file.Name()[lastSlashIndex:]
 
-	if err != nil {
-		return err
-	}
+	
 
 	
 	// creates a file in new path 
@@ -139,7 +154,7 @@ func MoveFile(from , to string) error {
 		return err
 	}
 
-	GreenLog("📦 File Move Successfully")
+	GreenLog("📦 File Moved Successfully")
 
 	return nil
 }
