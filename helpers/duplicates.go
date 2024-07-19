@@ -25,7 +25,7 @@ func RemoveDuplicates(dirPath string , filePaths *[]string) error {
 	if len(duplicatedPaths) > 0 {
 		color.Red("❗ Found %d Duplicated File(s) In %s And Its Sub Dirs" ,len(duplicatedPaths),dirPath)
 	
-        accessGranted,err := prompts.RunConfirmDeletePrompt()
+        accessGranted,err := prompts.RunConfirmDeletePrompt("Do you want me to delete duplicated files")
 		
 		if err != nil{
 			return err
