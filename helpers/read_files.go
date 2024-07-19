@@ -9,10 +9,11 @@ import (
 )
 
 // reads all files in a directory
-func ReadFiles(dirPath string) ([]string,error){
-	GreenLog(fmt.Sprintf("📂 Fetching File From %s", dirPath))
+func ReadFiles(dirPath string) (*[]string,error){
+	
+	GreenLog(fmt.Sprintf("📂 Fetching File(s) From %s", dirPath))
 	entries, err := os.ReadDir(dirPath)
-
+	
 	if err != nil {
 		return nil , err
 	}
@@ -26,11 +27,11 @@ func ReadFiles(dirPath string) ([]string,error){
 			newPath := path.Join(dirPath, entry.Name())
 			nestedFiles , _ := ReadFiles(newPath)
 			// append returned values from recursion call to files slice
-			files = append(files, nestedFiles...)
+			files = append(files, *nestedFiles...)
 		} else {
 			files = append(files, path.Join(dirPath,entry.Name()))
 		}
 	}
 	color.Green(fmt.Sprintf("✅ Got Files From %s" , dirPath))
-	return files, nil
+	return &files, nil
 }
