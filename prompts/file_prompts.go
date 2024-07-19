@@ -8,10 +8,10 @@ import (
 )
 
 
-func RunConfirmDeletePrompt() (bool,error) {
+func RunConfirmDeletePrompt(label string) (bool,error) {
 
     templates := &promptui.SelectTemplates{
-		Label:    "{{ . }}:",
+		Label:    "{{ . }}?",
 		Active:   fmt.Sprintf("%s {{ . | green }}", promptui.IconSelect),
 		Inactive: "  {{ . }}",
 		Selected: "{{ . | red | green }}",
@@ -19,7 +19,7 @@ func RunConfirmDeletePrompt() (bool,error) {
 
 
 	prompt := promptui.Select{
-		Label: "Do you want to delete duplicated files",
+		Label: label,
 		Items: []string{"Yes","No"},
 		HideHelp: true,
 		Templates: templates,
