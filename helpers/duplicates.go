@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 
 	"github.com/Rouch3362/roderfile/prompts"
 	"github.com/fatih/color"
@@ -12,7 +13,7 @@ import (
 
 
 
-func RemoveDuplicates(dirPath string , filePaths []string) error {
+func RemoveDuplicates(dirPath string , filePaths *[]string) error {
 	color.Green("🔍 Searching For Duplicated Files in %s", dirPath)
 	// getting duplicated files
 	duplicatedPaths,  err := CheckDuplicate(dirPath, filePaths)
@@ -35,10 +36,12 @@ func RemoveDuplicates(dirPath string , filePaths []string) error {
 			for _, path := range duplicatedPaths {
 				
 				err := os.Remove(path)
-	
+
 				if err != nil {
 					return err
 				}
+
+				remove(filePaths , path)
 	
 				color.Green("✅ Deleted Your Duplicated File Located: %s", path)
 			}
@@ -49,7 +52,7 @@ func RemoveDuplicates(dirPath string , filePaths []string) error {
 	
 }
 
-func CheckDuplicate(dirPath string,files []string) ([]string,error) {
+func CheckDuplicate(dirPath string,files *[]string) ([]string,error) {
 	// create an instance of a map that save hash as key and file path as value
 	filesSearched := map[string]string{}
 
@@ -57,7 +60,7 @@ func CheckDuplicate(dirPath string,files []string) ([]string,error) {
 	var duplicatedFilesPath []string
 
 
-	for _, filePath := range files {
+	for _, filePath := range *files {
 
 		// getting hash of file
 		hash, err := HashFile(filePath)
@@ -99,4 +102,19 @@ func HashFile(filePath string) (string, error) {
 	defer file.Close()
 	// returning the hash value
 	return fmt.Sprintf("%x", hash), nil
+}
+
+
+
+// removing the duplicated files that has been removed, from the original filePath slice 
+func remove(filePath *[]string , needsToBeRemoved string) {
+	// finding index of an element
+	resultIndex:= slices.Index(*filePath , needsToBeRemoved)
+
+	// if not found
+	if resultIndex == -1 {
+		return
+	}
+	
+	*filePath = append((*filePath)[:resultIndex] , (*filePath)[resultIndex+1:]...)
 }
