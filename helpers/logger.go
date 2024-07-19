@@ -7,11 +7,11 @@ import (
 )
 
 func GreenLog(text string) {
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond*150)
 	color.Green(text)
 }
 
 func RedLog(text string) {
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond*150)
 	color.Red(text)
 }
