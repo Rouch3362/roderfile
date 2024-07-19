@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"os"
 	"path"
 
@@ -9,7 +10,7 @@ import (
 
 // reads all files in a directory
 func ReadFiles(dirPath string) ([]string,error){
-	color.Green("📂 Fetching File From %s", dirPath)
+	GreenLog(fmt.Sprintf("📂 Fetching File From %s", dirPath))
 	entries, err := os.ReadDir(dirPath)
 
 	if err != nil {
@@ -30,6 +31,6 @@ func ReadFiles(dirPath string) ([]string,error){
 			files = append(files, path.Join(dirPath,entry.Name()))
 		}
 	}
-	color.Green("✅ Got Files From %s" , dirPath)
+	color.Green(fmt.Sprintf("✅ Got Files From %s" , dirPath))
 	return files, nil
 }
