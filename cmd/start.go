@@ -34,21 +34,40 @@ func start() error {
 		return err
 	}
 
-	r, err := helpers.ReadFiles(dirPath)
+	path, err := helpers.ReadFiles(dirPath)
 	if err != nil {
 		return err
 	}
-	err = helpers.RemoveDuplicates(dirPath,r)
-
-	if err != nil {
-		return err
-	}
-
-	err = helpers.CategorizeFiles(r)
+	err = helpers.RemoveDuplicates(dirPath,path)
 
 	if err != nil {
 		return err
 	}
 
+	err = helpers.CategorizeFiles(path)
+
+	if err != nil {
+		return err
+	}
+
+	accessGranted , err := prompts.RunConfirmDeletePrompt("Do you want me to search for empty folders and delete them")
+
+	if err != nil {
+		return err
+	}
+
+	if accessGranted {
+		err = helpers.RemoveEmptyDirectory(dirPath)
+
+		if err != nil {
+			return err
+		}
+
+		if helpers.NotFoundEmptyFolders {
+			helpers.GreenLog("🎉 Good News!! you don't have any empty folder")
+		
+		}
+	}
+	
 	return nil
 }
