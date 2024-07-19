@@ -24,14 +24,12 @@ func RunConfirmDeletePrompt() (bool,error) {
 		Templates: templates,
 	}
 
-	promptui.Styler(promptui.FGGreen)
 
 	_,result , err := prompt.Run()
     
 
 
 	if err != nil {
-		fmt.Println("sd",err)
 		return false, err
 	}
 
