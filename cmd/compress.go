@@ -13,8 +13,8 @@ var compressCmd = &cobra.Command{
 	Use:   "compress",
 	Short: "to compress your large files",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		
-		err := helpers.Compress()
+		deepFlag , _ := rootCmd.Flags().GetBool("deep")
+		err := helpers.Compress(deepFlag)
 
 
 		if err != nil {
@@ -27,4 +27,5 @@ var compressCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(compressCmd)
+	compressCmd.Flags().BoolVarP(&deep,"deep", "d", true, "for deep folder search. if you don't set this to false, the search will look through all sub directories.")
 }

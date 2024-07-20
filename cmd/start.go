@@ -9,11 +9,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+
+var (
+	deep bool
+)
+
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "a cli tool that your can organize you files with",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := start()
+		
+		deepFlag , _ := rootCmd.Flags().GetBool("deep")
+
+		err := start(deepFlag)
 
 		if err != nil {
 			return err
@@ -24,17 +32,19 @@ var startCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(startCmd)
+	startCmd.Flags().BoolVarP(&deep,"deep", "d", true, "for deep folder search. if you don't set this to false, the search will look through all sub directories.")
 }
 
 
-func start() error {
+func start(deepSearch bool) error {
 	dirPath, err := prompts.GetUserPrompt("Type the path of directory you want to organize", true)
+	
 
 	if err != nil {
 		return err
 	}
 
-	path, err := helpers.ReadFiles(dirPath)
+	path, err := helpers.ReadFiles(dirPath, deepSearch)
 	if err != nil {
 		return err
 	}
