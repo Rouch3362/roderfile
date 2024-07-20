@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Rouch3362/roderfile/prompts"
 	"github.com/Rouch3362/roderfile/types"
 )
-
 
 // a variable that turns to true if we made changes to user files
 var ORGANIZED bool
@@ -38,7 +38,7 @@ func CategorizeFiles(filePaths *[]string) error {
 	if err != nil {
 		return err
 	}
-
+	// if everthing is clean and organized
 	if !ORGANIZED {
 		GreenLog("🎉 Hooooooray Everything is Already Organized")
 	}
@@ -67,6 +67,7 @@ func CreateDirectories(dirs map[string][]string) error {
 			if !CheckFileOrFolderNotExist(pathToFolder) {
 				err := MoveFile(pathFile, pathToFolder)
 				if err != nil {
+					fmt.Println(err)
 					return err
 				}
 				continue
@@ -126,11 +127,35 @@ func MoveFile(from , to string) error {
 	lastSlashIndex := strings.LastIndex(file.Name() , "/")
 	newfilePath := file.Name()[lastSlashIndex:]
 
-	
+	// newToFilePath is just => to/filename
+	newToFilePath := path.Join(to,newfilePath)
+
+	// checks if file is exists
+	if !CheckFileOrFolderNotExist(newToFilePath) {
+		promptMessage := fmt.Sprintf("this file name is already exists at %s , select new name or either select ingore to ignore file and not moving it" , newToFilePath)
+		// show user option for changing the file name or ingoring it
+		userSelected , err :=prompts.CreateSelectPrompt(promptMessage , []string{"New Name","Ignore"})
+			
+		if err != nil {
+			return err
+		}
+		// if user choose ignore
+		if userSelected == "Ignore" {
+			return nil
+		}
+		// get user input for new file name
+		result , err := prompts.GetUserPrompt("Type New Name")
+
+		if err != nil {
+			return err
+		}
+		// rename the file
+		newToFilePath = RenameFile(newToFilePath , result)
+	}
 
 	
 	// creates a file in new path 
-	newFile , err := os.Create(path.Join(to,newfilePath))
+	newFile , err := os.Create(newToFilePath)
 
 	if err != nil {
 		return err
@@ -171,4 +196,24 @@ func AlreadyInCategorizedFolder(to, parentFilePath string) bool {
 	lastFolderOfParent := parentFilePath[strings.LastIndex(parentFilePath,"/"):]
 
 	return folderName == lastFolderOfParent
+}
+
+
+
+
+
+func RenameFile(filePath , filename string) string {
+	// getting file extension
+	fileExt := path.Ext(filePath)
+
+	// extracting old file name from path
+	oldFileName := filePath[strings.LastIndex(filePath,"/"):]
+	
+	// creating new file name based on user input and file extension
+	newFilename := "/"+filename+fileExt
+	// creating new path with new file name
+	newFilePath := strings.Replace(filePath,oldFileName, newFilename , -1)
+
+	return newFilePath
+
 }
