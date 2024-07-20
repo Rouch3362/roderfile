@@ -7,7 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-
 	"github.com/Rouch3362/roderfile/prompts"
 	"github.com/Rouch3362/roderfile/types"
 )
@@ -144,7 +143,7 @@ func MoveFile(from , to string) error {
 			return nil
 		}
 		// get user input for new file name
-		result , err := prompts.GetUserPrompt("Type New Name")
+		result , err := prompts.GetUserPrompt("Type New Name", true)
 
 		if err != nil {
 			return err

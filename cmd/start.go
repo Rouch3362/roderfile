@@ -28,7 +28,7 @@ func init() {
 
 
 func start() error {
-	dirPath, err := prompts.GetUserPrompt("Type the path of directory you want to organize")
+	dirPath, err := prompts.GetUserPrompt("Type the path of directory you want to organize", true)
 
 	if err != nil {
 		return err
