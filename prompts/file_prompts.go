@@ -2,34 +2,80 @@ package prompts
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/manifoldco/promptui"
 )
 
+func CreateSelectPrompt(label string , options []string) (string , error) {
+	templates := &promptui.SelectTemplates{
+		Label:    "{{ . }}?",
+		Active:   "✔ {{ . | green }}",
+		Inactive: "  {{ . }}",
+		Selected: "✔ {{ . | green }}",
+	}
+	
+	prompt := promptui.Select{
+		Label: label,
+		Items: options,
+		Templates: templates,
+		HideHelp: true,
+	} 
+
+	_,result , err := prompt.Run()
+
+	if err != nil {
+		return "", err
+	}
+
+	return result , nil
+}
+
+
+func GetUserPrompt(promptMessage string) (string, error) {
+
+	
+	templates := &promptui.PromptTemplates{
+		Prompt: "{{ . }}: ",
+		Valid:   "{{ . | green }} ",
+		Invalid: "{{ . | red }} ",
+		Success: "{{ . | bold }} ",
+	}
+
+
+	validate := func (input string) error {
+		if input == ""{
+			return errors.New("this prompt can not be empty")
+		}
+		return nil
+	}
+	
+	prompt := promptui.Prompt{
+		Label: promptMessage,
+		Validate: validate,
+		Templates: templates,
+		HideEntered: true,
+	}
+
+
+	
+
+	result , err := prompt.Run()
+
+	if err != nil {
+		return "",err
+	}
+
+	return result, nil
+
+}
+
 
 func RunConfirmDeletePrompt(label string) (bool,error) {
 
-    templates := &promptui.SelectTemplates{
-		Label:    "{{ . }}?",
-		Active:   fmt.Sprintf("%s {{ . | green }}", promptui.IconSelect),
-		Inactive: "  {{ . }}",
-		Selected: "{{ . | red | green }}",
-	}
+	options := []string{"Yes", "No"}
 
-
-	prompt := promptui.Select{
-		Label: label,
-		Items: []string{"Yes","No"},
-		HideHelp: true,
-		Templates: templates,
-	}
-
-
-	_,result , err := prompt.Run()
+	result , err := CreateSelectPrompt(label , options)
     
-
-
 	if err != nil {
 		return false, err
 	}
@@ -42,28 +88,18 @@ func RunConfirmDeletePrompt(label string) (bool,error) {
 }
 
 
-func GetDirectoryPrompt() (string , error) {
+func SortingPrompt() (string , error) {
 
-	validate := func (input string) error {
-		if input == ""{
-			return errors.New("this prompt can not be empty")
-		} else if len(input) < 3 {
-			return errors.New("invalid path")
-		}
-		return nil
-	}
-
-
-	prompt := promptui.Prompt{
-		Label: "Type the path of directory you want to organize",
-		Validate: validate,
-	}
-
-	result , err := prompt.Run()
+	label := "How you want me to sort your files"
+	options := []string{"Don't Sort", "By Size Ascending", "By Size Descending","By Date Modified Ascending", "By Date Modified Descending"}
+	
+	result , err := CreateSelectPrompt(label , options)
 
 	if err != nil {
 		return "", err
 	}
 
-	return result,nil
+	return result, nil
 }
+
+
