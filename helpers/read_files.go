@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-
-	"github.com/fatih/color"
 )
 
 // reads all files in a directory
@@ -32,6 +30,6 @@ func ReadFiles(dirPath string) (*[]string,error){
 			files = append(files, path.Join(dirPath,entry.Name()))
 		}
 	}
-	color.Green(fmt.Sprintf("✅ Got Files From %s" , dirPath))
+	GreenLog(fmt.Sprintf("✅ Got Files From %s" , dirPath))
 	return &files, nil
 }
