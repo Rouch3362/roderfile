@@ -7,11 +7,10 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-
 	"github.com/Rouch3362/roderfile/prompts"
 )
 
-func Compress() error {
+func Compress(deepSearch bool) error {
 	// getting user input path for compressing files
 	result , err := prompts.GetUserPrompt("Enter folder path you want to compress its files", false)
 
@@ -19,17 +18,23 @@ func Compress() error {
 		return err
 	}
 
+
 	// get all files in directory
-	filesPath, err := ReadFiles(result)
+	filesPath, err := ReadFiles(result, deepSearch)
 
 	if err != nil {
 		return err
 	}
 
-	filesChoosen , err := GetFileChoosen(filesPath)
+	filesChoosen , err := GetFileChoosen(filesPath, result)
 
 	if err != nil {
 		return err
+	}
+	// if user not choosen any file
+	if len(filesChoosen) < 1 {
+		RedLog("❌ You Didn't Choose Any Files")
+		return nil
 	}
 
 	err = CompressToZip(&filesChoosen, result)
@@ -79,23 +84,13 @@ func CompressToZip(filesPath *[]string, dirPath string) error {
 
 		defer file.Close()
 
-		
-
-		
-
-		if err != nil {
-			return err
-		}
-
-		
-
-
+		// create a file in zip file	
 		zippedFile, err := zipWriter.Create(fileName)
 
 		if err != nil {
 			return err
 		}
-
+		// copy content of file to file in zip
 		if _, err := io.Copy(zippedFile, file); err != nil {
 			return err
 		}
@@ -125,7 +120,7 @@ func GetFileContent(filePath string) (*os.File, string, string , error)  {
 }
 
 
-func GetFileChoosen(filesPath *[]string) ([]string , error) {
+func GetFileChoosen(filesPath *[]string, dirPath string) ([]string , error) {
 	// an instance of item from prompts Item
 	options := []*prompts.Items{}
 
@@ -133,8 +128,11 @@ func GetFileChoosen(filesPath *[]string) ([]string , error) {
 	filesPathMap := map[string]string{} 
 
 	for _,path := range *filesPath {
-		// getting last part of path => d:/test/example.txt -> example.txt
-		fileName := filepath.Base(path)
+		/* getting last part of path and nearest to dirPath => d:/test/document -> /example.txt or 
+		d:/test/document/new folder/example.txt -> /new folder/example.txt*/
+		
+		fileName := path[len(dirPath):]
+		
 		// getting file extension
 		fileExt := filepath.Ext(path)
 
