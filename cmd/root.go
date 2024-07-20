@@ -13,7 +13,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "roderfile",
-	Short: "a cli tool that you can organize you files with",
+	Short: "a cli tool that your can organize you files with",
 
 }
 

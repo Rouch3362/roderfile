@@ -11,7 +11,7 @@ import (
 
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "a cli tool that you can organize you files with",
+	Short: "a cli tool that your can organize you files with",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := start()
 
@@ -28,7 +28,7 @@ func init() {
 
 
 func start() error {
-	dirPath, err := prompts.GetDirectoryPrompt()
+	dirPath, err := prompts.GetUserPrompt("Type the path of directory you want to organize")
 
 	if err != nil {
 		return err
@@ -40,6 +40,12 @@ func start() error {
 	}
 	err = helpers.RemoveDuplicates(dirPath,path)
 
+	if err != nil {
+		return err
+	}
+
+	err = helpers.SortFiles(path)
+	
 	if err != nil {
 		return err
 	}
