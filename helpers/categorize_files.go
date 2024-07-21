@@ -66,7 +66,6 @@ func CreateDirectories(dirs map[string][]string) error {
 			if !CheckFileOrFolderNotExist(pathToFolder) {
 				err := MoveFile(pathFile, pathToFolder)
 				if err != nil {
-					fmt.Println(err)
 					return err
 				}
 				continue
@@ -128,7 +127,7 @@ func MoveFile(from , to string) error {
 
 	// newToFilePath is just => to/filename
 	newToFilePath := path.Join(to,newfilePath)
-	fmt.Println(newToFilePath)
+
 	// checks if file is exists
 	if !CheckFileOrFolderNotExist(newToFilePath) {
 		promptMessage := fmt.Sprintf("this file name is already exists at %s , select new name or either select ingore to ignore file and not moving it" , newToFilePath)
