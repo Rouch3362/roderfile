@@ -10,7 +10,7 @@ import (
 	"github.com/Rouch3362/roderfile/prompts"
 )
 
-func Compress(deepSearch bool) error {
+func Compress(deepSearchFlag, removeEmptyDirsFlag bool) error {
 	// getting user input path for compressing files
 	result , err := prompts.GetUserPrompt("Enter folder path you want to compress its files", false)
 
@@ -20,7 +20,7 @@ func Compress(deepSearch bool) error {
 
 
 	// get all files in directory
-	filesPath, err := ReadFiles(result, deepSearch)
+	filesPath, err := ReadFiles(result, deepSearchFlag, removeEmptyDirsFlag)
 
 	if err != nil {
 		return err
@@ -162,7 +162,6 @@ func GetFileChoosen(filesPath *[]string, dirPath string) ([]string , error) {
 		result[index] = filesPathMap[name]
 	}
 
-	fmt.Println(result)
 
 	return result, nil
 }
