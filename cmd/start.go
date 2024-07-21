@@ -19,7 +19,7 @@ var startCmd = &cobra.Command{
 	Short: "a cli tool that your can organize you files with",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		
-		deepFlag , _ := rootCmd.Flags().GetBool("deep")
+		deepFlag , _ := cmd.Flags().GetBool("deep")
 
 		err := start(deepFlag)
 
