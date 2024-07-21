@@ -30,8 +30,11 @@ func ReadFiles(dirPath string , deepSearch bool) (*[]string,error){
 			if deepSearch {
 				// if it is a directory it will use recursion to read all files
 				newPath := path.Join(dirPath, entry.Name())
-				nestedFiles , _ := ReadFiles(newPath, deepSearch)
+				nestedFiles , err := ReadFiles(newPath, deepSearch)
 				// append returned values from recursion call to files slice
+				if err != nil {
+					continue
+				}
 				files = append(files, *nestedFiles...)
 			} else {
 				continue 
@@ -43,7 +46,7 @@ func ReadFiles(dirPath string , deepSearch bool) (*[]string,error){
 
 	// if nothing founded
 	if len(files) < 1 {
-		RedLog("🔴 No Files Found")
+		RedLog(fmt.Sprintf("🔴 No Files Found In %s", dirPath))
 		return nil, errors.New("no files found")
 	}
 
