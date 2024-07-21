@@ -113,5 +113,7 @@ var FileTypes map[string]string = map[string]string{
 	".woff2":   "font",
 	".xul":     "data",
 	".swf":     "flash",
+	".srt": 	"subtitle",
+	".vtt": 	"subtitle",
 }
 
