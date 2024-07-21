@@ -4,6 +4,8 @@ Copyright © 2024 Amirali Ashoori <rouchashoori@gmail.com>
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/Rouch3362/roderfile/helpers"
 	"github.com/Rouch3362/roderfile/prompts"
 	"github.com/spf13/cobra"
@@ -12,6 +14,7 @@ import (
 
 var (
 	deep bool
+	removeEmptyDir bool
 )
 
 var startCmd = &cobra.Command{
@@ -20,8 +23,9 @@ var startCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		
 		deepFlag , _ := cmd.Flags().GetBool("deep")
-
-		err := start(deepFlag)
+		rmd , _ := cmd.Flags().GetBool("remove-empty-dirs")
+		fmt.Println(rmd)
+		err := start(deepFlag , rmd)
 
 		if err != nil {
 			return err
@@ -33,10 +37,11 @@ var startCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(startCmd)
 	startCmd.Flags().BoolVarP(&deep,"deep", "d", true, "for deep folder search. if you don't set this to false, the search will look through all sub directories.")
+	startCmd.Flags().BoolVarP(&removeEmptyDir, "remove-empty-dirs", "r",true , "for removing empty folders. if you don't set this to false, this tool will remove all empty folder in given directory and it is also affected by deep flag")
 }
 
 
-func start(deepSearch bool) error {
+func start(deepSearch, rmd bool) error {
 	dirPath, err := prompts.GetUserPrompt("Type the path of directory you want to organize", true)
 	
 
@@ -44,7 +49,7 @@ func start(deepSearch bool) error {
 		return err
 	}
 
-	path, err := helpers.ReadFiles(dirPath, deepSearch)
+	path, err := helpers.ReadFiles(dirPath, deepSearch , rmd)
 	if err != nil {
 		return err
 	}
@@ -64,25 +69,6 @@ func start(deepSearch bool) error {
 
 	if err != nil {
 		return err
-	}
-
-	accessGranted , err := prompts.RunConfirmDeletePrompt("Do you want me to search for empty folders and delete them")
-
-	if err != nil {
-		return err
-	}
-
-	if accessGranted {
-		err = helpers.RemoveEmptyDirectory(dirPath)
-
-		if err != nil {
-			return err
-		}
-
-		if helpers.NotFoundEmptyFolders {
-			helpers.GreenLog("🎉 Good News!! you don't have any empty folder")
-		
-		}
 	}
 	
 	return nil
