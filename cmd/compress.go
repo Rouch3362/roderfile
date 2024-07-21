@@ -14,7 +14,7 @@ var compressCmd = &cobra.Command{
 	Short: "to compress your large files",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		deepFlag , _ := cmd.Flags().GetBool("deep")
-		err := helpers.Compress(deepFlag)
+		err := helpers.Compress(deepFlag, removeEmptyDir)
 
 		if err != nil {
 			return err
