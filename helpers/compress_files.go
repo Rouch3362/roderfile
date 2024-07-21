@@ -71,7 +71,7 @@ func CompressToZip(filesPath *[]string, dirPath string) error {
 	}
 	// creating an instance of zip writer with zip file so we can copy files to it
 	zipWriter := zip.NewWriter(zipFile)
-
+	GreenLog(fmt.Sprintf("🗜️ Compressing Your File(s) To %s  (THIS MAY TAKE SOME TIME)", result))
 	// looping through all files
 	for _ , filePath := range *filesPath {
 		// get files info like file name, file instance
@@ -99,6 +99,7 @@ func CompressToZip(filesPath *[]string, dirPath string) error {
 		
 	}
 
+	GreenLog("✅ Compressed Your Files Successfully")
 	return nil
 }
 
