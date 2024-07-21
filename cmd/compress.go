@@ -4,8 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Rouch3362/roderfile/helpers"
 	"github.com/spf13/cobra"
 )
