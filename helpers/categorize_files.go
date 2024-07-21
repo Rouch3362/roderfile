@@ -85,7 +85,7 @@ func CreateDirectories(dirs map[string][]string) error {
 			if err != nil {	
 				return err
 			}
-			GreenLog(fmt.Sprintf("✅ %sFolder Created Successfully", key))
+			GreenLog(fmt.Sprintf("✅ %s Folder Created Successfully", key))
 		}
 		
 	}
@@ -128,7 +128,7 @@ func MoveFile(from , to string) error {
 
 	// newToFilePath is just => to/filename
 	newToFilePath := path.Join(to,newfilePath)
-
+	fmt.Println(newToFilePath)
 	// checks if file is exists
 	if !CheckFileOrFolderNotExist(newToFilePath) {
 		promptMessage := fmt.Sprintf("this file name is already exists at %s , select new name or either select ingore to ignore file and not moving it" , newToFilePath)
@@ -193,7 +193,6 @@ func AlreadyInCategorizedFolder(to, parentFilePath string) bool {
 	*/ 
 	folderName := to[strings.LastIndex(to, "/"):]
 	lastFolderOfParent := parentFilePath[strings.LastIndex(parentFilePath,"/"):]
-
 	return folderName == lastFolderOfParent
 }
 
