@@ -4,6 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/Rouch3362/roderfile/helpers"
 	"github.com/spf13/cobra"
 )
@@ -13,9 +15,8 @@ var compressCmd = &cobra.Command{
 	Use:   "compress",
 	Short: "to compress your large files",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		deepFlag , _ := rootCmd.Flags().GetBool("deep")
+		deepFlag , _ := cmd.Flags().GetBool("deep")
 		err := helpers.Compress(deepFlag)
-
 
 		if err != nil {
 			return err
