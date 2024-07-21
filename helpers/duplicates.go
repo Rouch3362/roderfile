@@ -6,15 +6,13 @@ import (
 	"io"
 	"os"
 	"slices"
-
 	"github.com/Rouch3362/roderfile/prompts"
-	"github.com/fatih/color"
 )
 
 
 
 func RemoveDuplicates(dirPath string , filePaths *[]string) error {
-	color.Green("🔍 Searching For Duplicated Files in %s", dirPath)
+	GreenLog(fmt.Sprintf("🔍 Searching For Duplicated Files in %s", dirPath))
 	// getting duplicated files
 	duplicatedPaths,  err := CheckDuplicate(dirPath, filePaths)
 
@@ -23,7 +21,7 @@ func RemoveDuplicates(dirPath string , filePaths *[]string) error {
 	}
     // if found any duplicated files asks for permission and removes files
 	if len(duplicatedPaths) > 0 {
-		color.Red("❗ Found %d Duplicated File(s) In %s And Its Sub Dirs" ,len(duplicatedPaths),dirPath)
+		YellowLog(fmt.Sprintf("❗ Found %d Duplicated File(s) In %s And Its Sub Dirs" ,len(duplicatedPaths),dirPath))
 	
         accessGranted,err := prompts.RunConfirmDeletePrompt("Do you want me to delete duplicated files")
 		
@@ -43,7 +41,7 @@ func RemoveDuplicates(dirPath string , filePaths *[]string) error {
 
 				remove(filePaths , path)
 	
-				color.Green("✅ Deleted Your Duplicated File Located: %s", path)
+				GreenLog(fmt.Sprintf("✅ Deleted Your Duplicated File Located: %s", path))
 			}
 		}
 	}
@@ -115,6 +113,6 @@ func remove(filePath *[]string , needsToBeRemoved string) {
 	if resultIndex == -1 {
 		return
 	}
-	
+	// change value of filePath in place
 	*filePath = append((*filePath)[:resultIndex] , (*filePath)[resultIndex+1:]...)
 }

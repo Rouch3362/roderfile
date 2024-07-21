@@ -121,6 +121,7 @@ func MultipleChoicePrompt(selecId int, label string , options []*Items) ([]strin
         Inactive: "{{if .IsSelected}}✔ {{end}}{{ .Name | green }}",
     }
 
+	// check for "Done" if not exist so we add it so user can sumbit their choices
 	if options[len(options)-1].Name != "Done" {
 		options = append(options, &Items{"Done",false})
 	}
@@ -141,10 +142,12 @@ func MultipleChoicePrompt(selecId int, label string , options []*Items) ([]strin
 
     
     selectedIdx, _, err := prompt.Run()
-        if err != nil {
+    
+	if err != nil {
         return nil, fmt.Errorf("prompt failed: %w", err)
     }
-    
+	
+	// getting choosen option 
     chosenItem := options[selectedIdx]
     
     if chosenItem.Name != "Done" {
