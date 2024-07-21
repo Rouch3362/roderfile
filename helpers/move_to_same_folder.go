@@ -50,6 +50,11 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool
 	}
 
 	for key, value := range commonFiles {
+
+		if value.Count < 2 {
+			continue
+		}
+
 		// again getting last part of path of same file names
 		lastPartOfPath := filepath.Base(value.Path[0])
 		// getting the parent path of file
@@ -63,7 +68,7 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool
 		}
 		// check if folder not exists and if it does creates one
 		if CheckFileOrFolderNotExist(folderPath) {
-			err := os.Mkdir(folderPath, 07000)
+			err := os.Mkdir(folderPath, 0700)
 			if err != nil {
 				return nil
 			}

@@ -4,8 +4,6 @@ Copyright © 2024 Amirali Ashoori <rouchashoori@gmail.com>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Rouch3362/roderfile/helpers"
 	"github.com/Rouch3362/roderfile/prompts"
 	"github.com/spf13/cobra"
@@ -24,7 +22,6 @@ var startCmd = &cobra.Command{
 		
 		deepFlag , _ := cmd.Flags().GetBool("deep")
 		rmd , _ := cmd.Flags().GetBool("remove-empty-dirs")
-		fmt.Println(rmd)
 		err := start(deepFlag , rmd)
 
 		if err != nil {
