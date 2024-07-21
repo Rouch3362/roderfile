@@ -15,9 +15,9 @@ type CommonFileInfo struct {
 // a variable that store if we made any changes to files 
 var MadeChanges bool
 
-func MoveToCommonFolder(folderToLookFor string, deepSearch bool) error {
+func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool) error {
 	// get file in a directory
-	filesPath, err := ReadFiles(folderToLookFor, deepSearch)
+	filesPath, err := ReadFiles(folderToLookFor, deepSearch, removeEmptyDirs)
 
 	// creating an instance for saving files with the same name and their addressses
 	commonFiles := map[string]*CommonFileInfo{}
@@ -65,7 +65,6 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch bool) error {
 		if CheckFileOrFolderNotExist(folderPath) {
 			err := os.Mkdir(folderPath, 07000)
 			if err != nil {
-				fmt.Println(err)
 				return nil
 			}
 		}
@@ -81,10 +80,9 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch bool) error {
 			}
 		}
 		MadeChanges = true
+		GreenLog(fmt.Sprintf("🆗 Made Common Folder For Your Files In %s", folderPath))
 	}
-	if MadeChanges {
-		GreenLog("🆗 Made Common Folder For Your Files")
-	} else {
+	if !MadeChanges {
 		GreenLog("🎊 Hooooray!! Everthing Is Clean")
 	}
 	return nil
