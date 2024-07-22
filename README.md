@@ -25,3 +25,8 @@
 
 
 ##### another flag is --remove-empty-dirs (shorthand is -r). like the --deep flag it is set to true by default and you can change to false when you don't want roderfile removes your empty folders.
+
+
+### feel free to contribute and add new features or fix bugs 🪲🪲
+
+### your ideas, opinions and thoughts on this means a lot for me so feel free to share it with me 😊😊.
