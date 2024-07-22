@@ -6,6 +6,8 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/Rouch3362/roderfile/prompts"
 )
 
 type CommonFileInfo struct {
@@ -55,17 +57,28 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool
 			continue
 		}
 
-		// again getting last part of path of same file names
-		lastPartOfPath := filepath.Base(value.Path[0])
-		// getting the parent path of file
-		parentPath := value.Path[0][:strings.LastIndex(value.Path[0], lastPartOfPath)]
+
+		// store the destination folder we want to store new folder in it
+		parentPath := folderToLookFor
 		// getting parent path file + file name
 		folderPath := path.Join(parentPath, key)
+		// getting user ideal path
+		result,err := prompts.GetUserPrompt(fmt.Sprintf("The Folder We'll Be Saved On This Path %s Changed It Or Just Hit Enter To Continue" , folderPath), false)
+
+		if err != nil {
+			return err
+		}
+		// if use not hit enter the user ideal path we'll we saved
+		if result != "" {
+			folderPath = path.Join(result,key)
+		}
+
 
 		// checking if files is not in the folder with same name of files with common name
-		if filepath.Base(folderPath) == filepath.Base(parentPath) {
+		if strings.Contains(folderPath[:strings.LastIndex(folderPath,"/")], key) {
 			continue
 		}
+
 		// check if folder not exists and if it does creates one
 		if CheckFileOrFolderNotExist(folderPath) {
 			err := os.Mkdir(folderPath, 0700)
@@ -76,9 +89,23 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool
 
 		GreenLog(fmt.Sprintf("📁 Making Folder For %s", folderPath))
 		// looping over files with same names
-		for _, file := range commonFiles[key].Path {
+		for index, file := range commonFiles[key].Path {
 			// moving them in one directory with their name
 			err := MoveFile(file, folderPath)
+			
+			// checks if we are in the last iteration and then executes below codes
+			if index == len(commonFiles[key].Path)-1 {
+				// getting files parent path that is moving
+				fileParent := file[:strings.LastIndex(file,"/")]
+				// getting the content in those folders
+				folderContents, _ := os.ReadDir(fileParent)
+
+				// if they not contain any file or folders just removes them as empty folders 
+
+				if len(folderContents) < 1 {
+					os.Remove(fileParent)
+				}
+			}
 
 			if err != nil {
 				return err
