@@ -11,7 +11,7 @@
 #### ![image](https://github.com/user-attachments/assets/6725cc4c-aabe-44cd-9de1-d4969090fdfc)
 
 
-###### you can read about commands afer typing roderfile and hiting enter, get familiar with different commands and flags.
+###### you can read about commands after typing roderfile and hiting enter, get familiar with different commands and flags.
 
 
 ##### start command is for when you have a messy files in a directory and you want to clean it up and make files categorized based on their file type.
