@@ -17,16 +17,18 @@ type CommonFileInfo struct {
 // a variable that store if we made any changes to files 
 var MadeChanges bool
 
-func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool) error {
+
+func CreateCommonFileMap(folderToLookFor string, deepSearch, removeEmptyDirs bool) (map[string]*CommonFileInfo, error ){
 	// get file in a directory
 	filesPath, err := ReadFiles(folderToLookFor, deepSearch, removeEmptyDirs)
+
+	if err != nil {
+		return nil,err
+	}
 
 	// creating an instance for saving files with the same name and their addressses
 	commonFiles := map[string]*CommonFileInfo{}
 
-	if err != nil {
-		return err
-	}
 	// looping over founded files
 	for _, filePath := range *filesPath {
 
@@ -49,6 +51,20 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool
 		commonFiles[filename].Path = append(commonFiles[filename].Path, filePath)
 		// increasing count of it
 		commonFiles[filename].Count++
+	}
+
+	return commonFiles, nil
+}
+
+
+
+
+func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool) error {
+	
+	commonFiles, err := CreateCommonFileMap(folderToLookFor, deepSearch, removeEmptyDirs)
+
+	if err != nil {
+		return err
 	}
 
 	for key, value := range commonFiles {
@@ -94,7 +110,7 @@ func MoveToCommonFolder(folderToLookFor string, deepSearch, removeEmptyDirs bool
 			err := MoveFile(file, folderPath)
 			
 			// checks if we are in the last iteration and then executes below codes
-			if index == len(commonFiles[key].Path)-1 {
+			if index == len(commonFiles[key].Path)-1 && removeEmptyDirs {
 				// getting files parent path that is moving
 				fileParent := file[:strings.LastIndex(file,"/")]
 				// getting the content in those folders
