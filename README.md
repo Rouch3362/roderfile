@@ -19,4 +19,7 @@
 #### onefolder command is used for when you have files with same name and different file types for example movies and their subtitles and you want to create a folder for them and put them together, you can use this command.
 
 
-#### for those commands you can choose whetere they go deep in your directory or its sub directories or not, using the --deep (shorthand is -d) flag. by default its value is true and if you want to turn it off you can set it to false
+#### for those commands you can choose whethere they go deep in your directory or its sub directories or not, using the --deep (shorthand is -d) flag. by default its value is true and if you want to turn it off you can set it to false.
+
+
+#### another flag is --remove-empty-dirs (shorthand is -r). like the --deep flag it is set to true by default and you can change to false when you don't want roderfile removes your empty folders.
